@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import com.parastrivedi.JournalApplication.entity.Journal;
 import com.parastrivedi.JournalApplication.exception.ApiResponse;
 import com.parastrivedi.JournalApplication.exception.ResourceNotFoundException;
-import com.parastrivedi.JournalApplication.repositry.JournalRepositry;
+import com.parastrivedi.JournalApplication.repositry.JournalRepository;
 import com.parastrivedi.JournalApplication.service.JournalService;
 
 @Service
 public class JournalServiceImpl implements JournalService {
 
 	@Autowired
-	private JournalRepositry journalRepositry;
+	private JournalRepository journalRepositry;
 
 	@Override
 	public List<Journal> getAll() {
