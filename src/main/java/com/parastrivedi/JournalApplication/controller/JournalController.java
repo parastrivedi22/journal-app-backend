@@ -27,24 +27,35 @@ public class JournalController {
 	private JournalService journalService;
 	
 	@GetMapping
-	public ResponseEntity<List<Journal>> getAllJournalEntriesOfUser(){
+	public ResponseEntity<List<Journal>> getAllJournalEntities(){
 		return new ResponseEntity<>(journalService.getAll(),HttpStatus.OK);
 		
 	}
+	@GetMapping("/u/{userId}")
+	public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable ObjectId userId){
+		List<Journal> journals = journalService.getAllUserJournals(userId);
+		
+		if(journals != null && !journals.isEmpty()){
+		return new ResponseEntity<>(journals,HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ApiResponse("Journal list is empty", false), HttpStatus.NOT_FOUND);
+		
+	}
 	
+		
 	@GetMapping("/{id}")
 	public ResponseEntity<Journal> getJournalById(@PathVariable ObjectId id){
 		return new ResponseEntity<>(journalService.getById(id),HttpStatus.OK);
 		
 	}
 	
-	@PostMapping
-	public ResponseEntity<Journal> createJournalEntry(@RequestBody Journal journal){
-		return new ResponseEntity<>(journalService.createJournal(journal), HttpStatus.CREATED);
+	@PostMapping("u/{userId}")
+	public ResponseEntity<Journal> createJournalEntry(@PathVariable ObjectId userId,@RequestBody Journal journal){
+		return new ResponseEntity<>(journalService.createJournal(userId, journal), HttpStatus.CREATED);
 	}
-	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteJournalEntry(@PathVariable ObjectId id){
-		return new ResponseEntity<>(journalService.deleteById(id), HttpStatus.OK);
+	@DeleteMapping("/{userId}/{journalId}")
+	public ResponseEntity<ApiResponse> deleteJournalEntry(@PathVariable ObjectId userId,@PathVariable ObjectId journalId){
+		return new ResponseEntity<>(journalService.deleteById(userId, journalId), HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}")
