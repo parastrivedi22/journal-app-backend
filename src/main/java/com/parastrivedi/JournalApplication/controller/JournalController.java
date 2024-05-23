@@ -26,11 +26,7 @@ public class JournalController {
 	@Autowired
 	private JournalService journalService;
 	
-	@GetMapping
-	public ResponseEntity<List<Journal>> getAllJournalEntities(){
-		return new ResponseEntity<>(journalService.getAll(),HttpStatus.OK);
-		
-	}
+	
 	@GetMapping("/u/{userId}")
 	public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable ObjectId userId){
 		List<Journal> journals = journalService.getAllUserJournals(userId);

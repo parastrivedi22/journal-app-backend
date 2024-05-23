@@ -29,7 +29,6 @@ public class UserController {
 	@GetMapping
 	public ResponseEntity<List<User>> getAllUsers() {
 		return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
-
 	}
 
 	@GetMapping("/{id}")
@@ -37,18 +36,7 @@ public class UserController {
 		return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
 
 	}
-
-	@PostMapping
-	public ResponseEntity<?> createUser(@RequestBody User user) {
-//		return new ResponseEntity<>(userService.newUser(user), HttpStatus.CREATED);
-		try {
-			return new ResponseEntity<>(userService.newUser(user), HttpStatus.CREATED);
-		} catch (Exception ex) {
-			System.out.println(ex);
-		}
-		return new ResponseEntity<>(new ApiResponse("User has already present ", false), HttpStatus.BAD_REQUEST);
-	}
-
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteUserById(@PathVariable ObjectId id) {
 		return new ResponseEntity<>(userService.deleteById(id), HttpStatus.OK);
