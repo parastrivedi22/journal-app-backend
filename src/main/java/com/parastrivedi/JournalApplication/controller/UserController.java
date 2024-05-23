@@ -19,48 +19,46 @@ import com.parastrivedi.JournalApplication.entity.User;
 import com.parastrivedi.JournalApplication.exception.ApiResponse;
 import com.parastrivedi.JournalApplication.service.UserService;
 
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
-	
-	
-	
+
 	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers(){
-		return new ResponseEntity<>(userService.getAllUser(),HttpStatus.OK);
-		
+	public ResponseEntity<List<User>> getAllUsers() {
+		return new ResponseEntity<>(userService.getAllUser(), HttpStatus.OK);
+
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable ObjectId id){
-		return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
-		
+	public ResponseEntity<User> getUserById(@PathVariable ObjectId id) {
+		return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<?> createUser(@RequestBody User user){
-		return new ResponseEntity<>(userService.newUser(user), HttpStatus.CREATED);
-//		try {
-//			return new ResponseEntity<>(userService.newUser(user), HttpStatus.CREATED);
-//		}catch(Exception ex) {
-//			System.out.println(ex);
-//		}
-//		return new ResponseEntity<>(new ApiResponse("User has already present ", false), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> createUser(@RequestBody User user) {
+//		return new ResponseEntity<>(userService.newUser(user), HttpStatus.CREATED);
+		try {
+			return new ResponseEntity<>(userService.newUser(user), HttpStatus.CREATED);
+		} catch (Exception ex) {
+			System.out.println(ex);
+		}
+		return new ResponseEntity<>(new ApiResponse("User has already present ", false), HttpStatus.BAD_REQUEST);
 	}
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<ApiResponse> deleteUserById(@PathVariable ObjectId id){
+	public ResponseEntity<ApiResponse> deleteUserById(@PathVariable ObjectId id) {
 		return new ResponseEntity<>(userService.deleteById(id), HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable ObjectId id, @RequestBody User newUser){
-		
+	public ResponseEntity<User> updateUser(@PathVariable ObjectId id, @RequestBody User newUser) {
+
 		return new ResponseEntity<>(userService.updateUser(id, newUser), HttpStatus.OK);
-		
+
 	}
 
 }

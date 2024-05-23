@@ -24,16 +24,18 @@ public class User {
 
     @Id
     private ObjectId id;
-    @Indexed(unique = true)
+    @Indexed
     @NonNull
     private String userName;
     @Indexed(unique = true)
     @NonNull		
-    private String email;
+    private String userEmail;
 //    private boolean sentimentAnalysis;
     @NonNull
     private String password;
+    private String role;
     @DBRef
     private List<Journal> journalEntries = new ArrayList<>();
+   
 //    private List<String> roles;
 }

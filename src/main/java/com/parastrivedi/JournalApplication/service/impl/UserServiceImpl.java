@@ -4,8 +4,9 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import  org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.parastrivedi.JournalApplication.entity.User;
 import com.parastrivedi.JournalApplication.exception.ApiResponse;
 import com.parastrivedi.JournalApplication.exception.ResourceNotFoundException;
@@ -16,12 +17,15 @@ import com.parastrivedi.JournalApplication.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 	
+
 	@Autowired
 	private UserRepository userRepository;
-
+	@Autowired
+	private PasswordEncoder encorder;
 	@Override
 	public User newUser(User user) {
 		// TODO Auto-generated method stub
+		user.setPassword(encorder.encode(user.getPassword()));
 				
 		return userRepository.save(user);
 	}
