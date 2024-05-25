@@ -9,13 +9,13 @@ import com.parastrivedi.JournalApplication.exception.ApiResponse;
 
 public interface JournalService {
 	public List<Journal> getAll();
-	public List<Journal> getAllUserJournals(ObjectId userId);
+	public List<Journal> getAllUserJournals(String userEmail);
 
 	public Journal getById(ObjectId id);
 
-	public ApiResponse deleteById(ObjectId userId, ObjectId journalId);
+	public ApiResponse deleteById(ObjectId journalId);
 
-	public Journal createJournal(ObjectId userId, Journal journal);
+	public Journal createJournal(String userEmail, Journal journal);
 
-	public Journal updateJournal(ObjectId id, Journal newJournal);
+	public Journal updateJournal(ObjectId journalId, Journal newJournal);
 }

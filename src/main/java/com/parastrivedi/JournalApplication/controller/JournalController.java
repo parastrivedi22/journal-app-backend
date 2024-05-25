@@ -6,6 +6,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,43 +24,49 @@ import com.parastrivedi.JournalApplication.service.JournalService;
 @RestController
 @RequestMapping("/journal")
 public class JournalController {
-	
+
 	@Autowired
 	private JournalService journalService;
-	
-	
-	@GetMapping("/u/{userId}")
-	public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable ObjectId userId){
-		List<Journal> journals = journalService.getAllUserJournals(userId);
-		
-		if(journals != null && !journals.isEmpty()){
-		return new ResponseEntity<>(journals,HttpStatus.OK);
+
+	@GetMapping
+	public ResponseEntity<?> getAllJournalEntriesOfUser() {
+		Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
+		String userEmail = authenticated.getName();
+		List<Journal> journals = journalService.getAllUserJournals(userEmail);
+
+		if (journals != null && !journals.isEmpty()) {
+			return new ResponseEntity<>(journals, HttpStatus.OK);
 		}
-		return new ResponseEntity<>(new ApiResponse("Journal list is empty", false), HttpStatus.NOT_FOUND);
-		
+		return new ResponseEntity<>
+		(new ApiResponse("Journal list is empty", false), HttpStatus.NOT_FOUND);
+
 	}
-	
-		
-	@GetMapping("/{id}")
-	public ResponseEntity<Journal> getJournalById(@PathVariable ObjectId id){
-		return new ResponseEntity<>(journalService.getById(id),HttpStatus.OK);
-		
+
+	@PostMapping
+	public ResponseEntity<Journal> createJournalEntry(@RequestBody Journal journal) {
+		Authentication authenticated = SecurityContextHolder.getContext().getAuthentication();
+		String userEmail = authenticated.getName();
+
+		return new ResponseEntity<>(journalService.createJournal(userEmail, journal), HttpStatus.CREATED);
 	}
-	
-	@PostMapping("u/{userId}")
-	public ResponseEntity<Journal> createJournalEntry(@PathVariable ObjectId userId,@RequestBody Journal journal){
-		return new ResponseEntity<>(journalService.createJournal(userId, journal), HttpStatus.CREATED);
+
+	@DeleteMapping("/{journalId}")
+	public ResponseEntity<ApiResponse> deleteJournalEntry(@PathVariable ObjectId journalId) {
+
+		return new ResponseEntity<>(journalService.deleteById(journalId), HttpStatus.OK);
 	}
-	@DeleteMapping("/{userId}/{journalId}")
-	public ResponseEntity<ApiResponse> deleteJournalEntry(@PathVariable ObjectId userId,@PathVariable ObjectId journalId){
-		return new ResponseEntity<>(journalService.deleteById(userId, journalId), HttpStatus.OK);
-	}
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<Journal> updateJournalEntity(@PathVariable ObjectId id, @RequestBody Journal newJournalEntity){
+
+	@PutMapping("/{journalId}")
+	public ResponseEntity<?> updateJournalEntity(@PathVariable ObjectId journalId,@RequestBody Journal newJournalEntity) {
+		Journal journal = journalService.updateJournal(journalId, newJournalEntity);
 		
-		return new ResponseEntity<>(journalService.updateJournal(id, newJournalEntity), HttpStatus.OK);
+		if (journal != null) {
+			return new ResponseEntity<>(journal, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ApiResponse("Journal is no longer available", false), HttpStatus.BAD_REQUEST);
 		
+		
+
 	}
 
 }

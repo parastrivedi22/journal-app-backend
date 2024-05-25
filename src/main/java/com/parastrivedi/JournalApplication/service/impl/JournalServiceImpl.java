@@ -2,9 +2,15 @@ package com.parastrivedi.JournalApplication.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,42 +33,52 @@ public class JournalServiceImpl implements JournalService {
 
 	@Override
 	public List<Journal> getAll() {
-		// TODO Auto-generated method stub
+
 		return journalRepository.findAll();
 
 	}
-	
-	
+
 	@Override
-	public List<Journal> getAllUserJournals(ObjectId userId) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("journal", userId));
-		return user.getJournalEntries() ;
+	public List<Journal> getAllUserJournals(String userEmail) {
+		User user = userRepository.findByUserEmail(userEmail)
+				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
+		return user.getJournalEntries();
 	}
 
 	@Override
 	public Journal getById(ObjectId id) {
-		// TODO Auto-generated method stub
 		return journalRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("journal", id));
-
 	}
 
 	@Override
 	@Transactional
-	public ApiResponse deleteById(ObjectId userId, ObjectId journalId) {
-		// TODO Auto-generated method stub
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", userId));
-		journalRepository.findById(journalId).orElseThrow(() -> new ResourceNotFoundException("journal", journalId));
-		user.getJournalEntries().removeIf(e->e.getId().equals(journalId));
-		userRepository.save(user);
-		journalRepository.deleteById(journalId);
-		return new ApiResponse("Journal deleted", true);
+	public ApiResponse deleteById(ObjectId journalId) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userEmail = authentication.getName();
+
+		User user = userRepository.findByUserEmail(userEmail)
+				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
+
+		List<Journal> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(journalId))
+				.collect(Collectors.toList());
+
+		if (!collect.isEmpty()) {
+			boolean removed = user.getJournalEntries().removeIf(e -> e.getId().equals(journalId));
+			if (removed == true) {
+				userRepository.save(user);
+				journalRepository.deleteById(journalId);
+				return new ApiResponse("Journal deleted", true);
+			}
+		}
+		return new ApiResponse("Journal is no longer avaible", false);
 	}
 
 	@Override
 	@Transactional
-	public Journal createJournal(ObjectId userId, Journal journal) {
-		// TODO Auto-generated method stub
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("journal", userId));
+	public Journal createJournal(String userEmail, Journal journal) {
+		User user = userRepository.findByUserEmail(userEmail)
+				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
+
 		journal.setCreatedAt(LocalDateTime.now());
 		Journal save = journalRepository.save(journal);
 		user.getJournalEntries().add(save);
@@ -70,21 +86,32 @@ public class JournalServiceImpl implements JournalService {
 		return journal;
 	}
 
-	public Journal updateJournal(ObjectId id, Journal newJournal) {
+	@Transactional
+	public Journal updateJournal(ObjectId journalId, Journal newEntry) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userEmail = authentication.getName();
+		
+		User user = userRepository.findByUserEmail(userEmail)
+				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
 
-		Journal journal = journalRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("journal", id));
+		List<Journal> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(journalId))
+				.collect(Collectors.toList());
 
-		journal.setTitle(newJournal.getTitle() == null || newJournal.getTitle().trim().equals("") ? journal.getTitle()
-				: newJournal.getTitle().trim());
-
-		journal.setContent(
-				newJournal.getContent() == null || newJournal.getContent().trim().equals("") ? journal.getContent()
-						: newJournal.getContent().trim());
-
-		Journal updatedJournal = journalRepository.save(journal);
-		return updatedJournal;
+		if (!collect.isEmpty()) {
+			Optional<Journal> journalEntry = journalRepository.findById(journalId);
+			if (journalEntry.isPresent()) {
+				Journal old = journalEntry.get();
+				old.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().trim().equals("")
+						? newEntry.getTitle().trim()
+						: old.getTitle());
+				old.setContent(newEntry.getContent() != null && !newEntry.getContent().trim().equals("")
+						? newEntry.getContent().trim()
+						: old.getContent());
+				journalRepository.save(old);
+				return old;
+			}
+		}
+		return null;
 	}
-
-	
 
 }
