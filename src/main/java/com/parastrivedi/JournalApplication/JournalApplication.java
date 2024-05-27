@@ -8,13 +8,17 @@ import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import lombok.extern.slf4j.Slf4j;
+
 @SpringBootApplication
 @EnableTransactionManagement
+@Slf4j
 public class JournalApplication {
 
+	
 	public static void main(String[] args) {
 		SpringApplication.run(JournalApplication.class, args);
-		System.out.print("Journal Application work...");
+		log.info("{}: Journal Application started", JournalApplication.class);
 	}
 	
 	@Bean

@@ -22,7 +22,10 @@ import com.parastrivedi.JournalApplication.repositry.JournalRepository;
 import com.parastrivedi.JournalApplication.repositry.UserRepository;
 import com.parastrivedi.JournalApplication.service.JournalService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class JournalServiceImpl implements JournalService {
 
 	@Autowired
@@ -40,6 +43,7 @@ public class JournalServiceImpl implements JournalService {
 
 	@Override
 	public List<Journal> getAllUserJournals(String userEmail) {
+		log.info("{} method getAllUserJournals", JournalServiceImpl.class);
 		User user = userRepository.findByUserEmail(userEmail)
 				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
 		return user.getJournalEntries();
@@ -47,12 +51,14 @@ public class JournalServiceImpl implements JournalService {
 
 	@Override
 	public Journal getById(ObjectId id) {
+		log.info("{} method getById", JournalServiceImpl.class);
 		return journalRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("journal", id));
 	}
 
 	@Override
 	@Transactional
 	public ApiResponse deleteById(ObjectId journalId) {
+		log.info("{} method deleteById", JournalServiceImpl.class);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
 
@@ -76,6 +82,7 @@ public class JournalServiceImpl implements JournalService {
 	@Override
 	@Transactional
 	public Journal createJournal(String userEmail, Journal journal) {
+		log.info("{} method createJournal", JournalServiceImpl.class);
 		User user = userRepository.findByUserEmail(userEmail)
 				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
 
@@ -88,6 +95,9 @@ public class JournalServiceImpl implements JournalService {
 
 	@Transactional
 	public Journal updateJournal(ObjectId journalId, Journal newEntry) {
+		
+		log.info("{} method updateJournal", JournalServiceImpl.class);
+		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
 		
