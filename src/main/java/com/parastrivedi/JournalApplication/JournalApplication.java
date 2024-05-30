@@ -15,15 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JournalApplication {
 
-	
 	public static void main(String[] args) {
 		SpringApplication.run(JournalApplication.class, args);
 		log.info("{}: Journal Application started", JournalApplication.class);
+		System.out.println("Application started...");
 	}
-	
+
 	@Bean
 	public PlatformTransactionManager plateFormTransactionManager(MongoDatabaseFactory dbFactory) {
-		return new MongoTransactionManager(dbFactory) ;
+		return new MongoTransactionManager(dbFactory);
 	}
 
 }
