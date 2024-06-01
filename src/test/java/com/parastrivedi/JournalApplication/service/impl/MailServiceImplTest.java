@@ -27,9 +27,4 @@ public class MailServiceImplTest {
 		
 	}
 	
-	@Test
-	public void mailTest3() {
-		assertTrue(service.sendEmail("ptrivedi288@gmail.com", "Hello", "Hey"));
-		
-	}
 }

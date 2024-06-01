@@ -1,0 +1,26 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://parastrivedi22:parastrivedi22@cluster0.bu14jkc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: JournalApplicationDB
+      auto-index-creation: true
+    
+    
+   
+   
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: parastrivedi22@gmail.com
+    password: 
+    properties:
+      mail:
+        stmp:
+          auth: true
+          starttls:
+            enable: true
+        
+    
+    
+    
+ 
