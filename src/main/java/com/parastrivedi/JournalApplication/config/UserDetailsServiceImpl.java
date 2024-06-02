@@ -20,20 +20,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	private UserRepository userRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String userEmail)  {
-		log.info("{} called loadUserByUsername", UserDetailsServiceImpl.class);		
+	public UserDetails loadUserByUsername(String userEmail) {
+		log.info("{} called loadUserByUsername", UserDetailsServiceImpl.class);
 
-		com.parastrivedi.JournalApplication.entity.User userEntity =
-				userRepository.findByUserEmail(userEmail)
+		com.parastrivedi.JournalApplication.entity.User userEntity = userRepository.findByUserEmail(userEmail)
 				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
-		
+
 		if (userEntity != null) {
-			UserDetails user = 
-					User.builder()
-					.username(userEntity.getUserEmail())
-					.password(userEntity.getPassword())
-					.roles(userEntity.getRole())
-					.build();
+			UserDetails user = User.builder().username(userEntity.getUserEmail()).password(userEntity.getPassword())
+					.roles(userEntity.getRole()).build();
 			return user;
 		} else {
 			throw new UsernameNotFoundException(userEmail);

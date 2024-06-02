@@ -25,11 +25,8 @@ public class PublicController {
 	@Autowired
 	private UserService userService;
 
-
 	@Autowired
 	private JournalService journalService;
-	
-	
 
 	@PostMapping("/u")
 	public ResponseEntity<?> createUser(@RequestBody User user) {
@@ -40,17 +37,16 @@ public class PublicController {
 		}
 		return new ResponseEntity<>(new ApiResponse("User has already present ", false), HttpStatus.BAD_REQUEST);
 	}
-	
-	
-	
+
 	@GetMapping("/j")
-	public ResponseEntity<List<Journal>> getAllJournalEntities(){
-		return new ResponseEntity<>(journalService.getAll(),HttpStatus.OK);
+	public ResponseEntity<List<Journal>> getAllJournalEntities() {
+		return new ResponseEntity<>(journalService.getAll(), HttpStatus.OK);
 	}
+
 	@GetMapping("/j/{id}")
-	public ResponseEntity<Journal> getJournalById(@PathVariable ObjectId id){
-		return new ResponseEntity<>(journalService.getById(id),HttpStatus.OK);
-		
+	public ResponseEntity<Journal> getJournalById(@PathVariable ObjectId id) {
+		return new ResponseEntity<>(journalService.getById(id), HttpStatus.OK);
+
 	}
-	
+
 }

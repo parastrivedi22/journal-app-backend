@@ -52,7 +52,7 @@ public class SecurityConfiguration {
 
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
-		log.info("{} called AuthenticationProvider", SecurityConfiguration.class);		
+		log.info("{} called AuthenticationProvider", SecurityConfiguration.class);
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(userDetailsServiceImpl);
 		provider.setPasswordEncoder(passwordEncoder());

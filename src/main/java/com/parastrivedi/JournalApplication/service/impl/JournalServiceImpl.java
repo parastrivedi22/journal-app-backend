@@ -95,12 +95,12 @@ public class JournalServiceImpl implements JournalService {
 
 	@Transactional
 	public Journal updateJournal(ObjectId journalId, Journal newEntry) {
-		
+
 		log.info("{} method updateJournal", JournalServiceImpl.class);
-		
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
-		
+
 		User user = userRepository.findByUserEmail(userEmail)
 				.orElseThrow(() -> new ResourceNotFoundException("User", userEmail));
 

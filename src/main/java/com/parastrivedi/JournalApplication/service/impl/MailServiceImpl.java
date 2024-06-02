@@ -13,25 +13,23 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class MailServiceImpl implements MailService {
-	
+
 	public final String EMAIL_PATTERN = "(?i)[-a-zA-Z0-9+_][-a-zA-Z0-9+_.]*@[-a-zA-Z0-9][-a-zA-Z0-9.]*\\.[a-zA-Z]{2,30}";
 
 	@Autowired
 	private JavaMailSender mailSender;
 
 	@Override
-	public boolean sendEmail(String to, String subject, String text)  {
+	public boolean sendEmail(String to, String subject, String text) {
 		// TODO Auto-generated method stub
 
-		if (to == null || to.trim().equals("") 
-				|| subject == null || subject.trim().equals("")
-				|| text == null || text.trim().equals(""))
-		{
+		if (to == null || to.trim().equals("") || subject == null || subject.trim().equals("") || text == null
+				|| text.trim().equals("")) {
 			log.warn("{} : email content is invalid", MailServiceImpl.class);
 			throw new BadRequestException("email content is invalid");
 		}
-		
-		if(!to.matches(EMAIL_PATTERN)) {
+
+		if (!to.matches(EMAIL_PATTERN)) {
 			log.warn("{} : email is invalid", MailServiceImpl.class);
 			throw new BadRequestException("email is invalid");
 		}

@@ -9,6 +9,7 @@ import com.parastrivedi.JournalApplication.exception.ApiResponse;
 
 public interface JournalService {
 	public List<Journal> getAll();
+
 	public List<Journal> getAllUserJournals(String userEmail);
 
 	public Journal getById(ObjectId id);

@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getAllUser() {
 		// TODO Auto-generated method stub
-		log.info("{} method getAllUser called",UserServiceImpl.class );
+		log.info("{} method getAllUser called", UserServiceImpl.class);
 		return userRepository.findAll();
 	}
 

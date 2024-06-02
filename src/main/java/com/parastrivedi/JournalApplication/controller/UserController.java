@@ -36,7 +36,7 @@ public class UserController {
 		return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
 
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse> deleteUserById(@PathVariable ObjectId id) {
 		return new ResponseEntity<>(userService.deleteById(id), HttpStatus.OK);

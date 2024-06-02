@@ -9,9 +9,13 @@ import com.parastrivedi.JournalApplication.exception.ApiResponse;
 
 public interface UserService {
 	public User newUser(User user);
+
 	public List<User> getAllUser();
+
 	public User getUserById(ObjectId id);
+
 	public ApiResponse deleteById(ObjectId id);
+
 	public User updateUser(ObjectId id, User newUser);
 
 }

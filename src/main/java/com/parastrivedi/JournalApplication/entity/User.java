@@ -22,20 +22,20 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class User {
 
-    @Id
-    private ObjectId id;
-    @Indexed
-    @NonNull
-    private String userName;
-    @Indexed(unique = true)
-    @NonNull		
-    private String userEmail;
+	@Id
+	private ObjectId id;
+	@Indexed
+	@NonNull
+	private String userName;
+	@Indexed(unique = true)
+	@NonNull
+	private String userEmail;
 //    private boolean sentimentAnalysis;
-    @NonNull
-    private String password;
-    private String role;
-    @DBRef
-    private List<Journal> journalEntries = new ArrayList<>();
-   
+	@NonNull
+	private String password;
+	private String role;
+	@DBRef
+	private List<Journal> journalEntries = new ArrayList<>();
+
 //    private List<String> roles;
 }

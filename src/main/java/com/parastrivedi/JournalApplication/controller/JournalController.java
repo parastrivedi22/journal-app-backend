@@ -37,8 +37,7 @@ public class JournalController {
 		if (journals != null && !journals.isEmpty()) {
 			return new ResponseEntity<>(journals, HttpStatus.OK);
 		}
-		return new ResponseEntity<>
-		(new ApiResponse("Journal list is empty", false), HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(new ApiResponse("Journal list is empty", false), HttpStatus.NOT_FOUND);
 
 	}
 
@@ -57,15 +56,14 @@ public class JournalController {
 	}
 
 	@PutMapping("/{journalId}")
-	public ResponseEntity<?> updateJournalEntity(@PathVariable ObjectId journalId,@RequestBody Journal newJournalEntity) {
+	public ResponseEntity<?> updateJournalEntity(@PathVariable ObjectId journalId,
+			@RequestBody Journal newJournalEntity) {
 		Journal journal = journalService.updateJournal(journalId, newJournalEntity);
-		
+
 		if (journal != null) {
 			return new ResponseEntity<>(journal, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ApiResponse("Journal is no longer available", false), HttpStatus.BAD_REQUEST);
-		
-		
 
 	}
 

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Document(collection = "journal")
 public class Journal {
-	
+
 	@Id
 	private ObjectId id;
 	@NonNull
