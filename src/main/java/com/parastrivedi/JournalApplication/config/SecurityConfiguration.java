@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,19 +26,21 @@ public class SecurityConfiguration {
 	@Autowired
 	UserDetailsServiceImpl userDetailsServiceImpl;
 
+	@Autowired
+	private JwtFilter jwtFilter;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
 
 	{
 		log.info("{} called SecurityFilterChain", SecurityConfiguration.class);
-		http.csrf(c -> c.disable())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(authz -> authz.requestMatchers("/public/**").permitAll()
-						.requestMatchers("/user/**", "/journal/**").hasRole("user").anyRequest().authenticated()// Public
-																												// endpoints
-
-				).httpBasic(Customizer.withDefaults());// Basic authentication
-
+		http.csrf(c -> c.disable()).authorizeHttpRequests(authz -> authz.requestMatchers("/public/**").permitAll()
+				.requestMatchers("/user/**", "/journal/**").hasRole("user").anyRequest().authenticated());
+//				http.httpBasic(Customizer.withDefaults());// Basic authentication
+	
+		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		
 		return http.build();
 	}
 
@@ -60,8 +63,6 @@ public class SecurityConfiguration {
 
 		return provider;
 	}
-	
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+
+
 }
